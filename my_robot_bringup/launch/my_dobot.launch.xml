@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<launch>
+    <let name="urdf_path" value="$(find-pkg-share my_robot_description)/urdf/my_robot.urdf.xacro"/>
+    <let name="rviz_config_path" value="$(find-pkg-share my_robot_bringup)/config/my_robot_moveit.rviz"/>
+
+    <!-- 发布机器人模型 -->
+    <node pkg="robot_state_publisher" exec="robot_state_publisher">
+        <param name="robot_description" value="$(command 'xacro $(var urdf_path)')"/>
+    </node>
+
+    <!-- ros2_control 核心节点（带 yaml + 重映射） -->
+    <node pkg="controller_manager" exec="ros2_control_node">
+        <param from="$(find-pkg-share my_robot_bringup)/config/ros2_controllers.yaml"/>
+        <remap from="/controller_manager/robot_description" to="/robot_description"/>
+    </node>
+
+    <!-- 自动启动控制器 -->
+    <node pkg="controller_manager" exec="spawner" args="joint_state_broadcaster"/>
+    <node pkg="controller_manager" exec="spawner" args="arm_controller"/>
+    <node pkg="controller_manager" exec="spawner" args="gripper_controller"/>
+
+    <!-- 启动 MoveIt -->
+    <include file="$(find-pkg-share my_robot_moveit_config)/launch/move_group.launch.py"/>
+    <node pkg="my_robot_commander_cpp" exec="commander" />
+    <!-- 启动 RViz -->
+    <node pkg="rviz2" exec="rviz2" output="screen" args="-d $(var rviz_config_path)"/>
+
+</launch>
