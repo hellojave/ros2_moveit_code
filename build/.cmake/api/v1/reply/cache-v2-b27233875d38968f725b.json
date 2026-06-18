@@ -4446,6 +4446,18 @@
 			"value" : "/opt/ros/humble/share/tinyxml2_vendor/cmake"
 		},
 		{
+			"name" : "tl-expected_DIR",
+			"properties" : 
+			[
+				{
+					"name" : "HELPSTRING",
+					"value" : "The directory containing a CMake configuration file for tl-expected."
+				}
+			],
+			"type" : "PATH",
+			"value" : "/usr/share/cmake/tl-expected"
+		},
+		{
 			"name" : "tl_expected_DIR",
 			"properties" : 
 			[
